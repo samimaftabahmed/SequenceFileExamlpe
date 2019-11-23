@@ -34,14 +34,14 @@ public class ConvertToSequenceFile extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
 
-        String[] otherArgs = new GenericOptionsParser(this.getConf(), args).getRemainingArgs();
+        Configuration conf = this.getConf();
+        String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
         if (otherArgs.length != 2) {
             System.err.println("Usage: hadoop jar SequenceFileExample.jar </input-path> </output-path>");
             return 2;
         }
 
-        Configuration conf = this.getConf();
         FileSystem fs = FileSystem.get(conf);
         Path inputFile = new Path(args[0]);
         Path outputFile = new Path(args[1]);
@@ -49,7 +49,7 @@ public class ConvertToSequenceFile extends Configured implements Tool {
         FSDataInputStream inputStream;
         LongWritable key = new LongWritable();
         Text value = new Text();
-        SequenceFile.Writer writer = null;
+        SequenceFile.Writer writer;
 
         if (isCompressionNeeded) {
             writer = SequenceFile.createWriter(fs, conf,
